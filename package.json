@@ -6,15 +6,17 @@
   "author": "Bruno Furtado <brunofurmon@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint --fix ./**/*.js"
+    "lint": "eslint --fix ./**/*.js",
+    "debug": "nodemon src/index.js",
+    "test": "jest --detectOpenHandles --coverage --passWithNoTests",
+    "start": "node src/index.js"
   },
   "devDependencies": {
     "eslint": "^7.32.0 || ^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.2",
-    "jest": "^29.6.1"
-  },
-  "dependencies": {
-    "eslint-plugin-jest": "^27.2.2"
+    "eslint-plugin-jest": "^27.2.2",
+    "jest": "^29.6.1",
+    "nodemon": "^3.0.1"
   }
 }

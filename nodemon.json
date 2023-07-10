@@ -1,0 +1,5 @@
+{
+    "ignore": ["test/**"],
+    "ext": "js,json"
+}
+  
