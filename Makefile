@@ -7,8 +7,7 @@ INTERACTIVE := $(shell [ -t 0 ] && echo i || echo d)
 APPDIR = /usr/cart-api
 PWD=$(shell pwd)
 PORT=8088
-PORT_DEBUG=8089
-PORT_DEBUG_TEST=8090
+PORT_DEBUG=9229
 CONTAINER_NAME=cart-api
 
 welcome:
@@ -39,7 +38,7 @@ build-docker-image: ## Build docker image (no cache)
 
 debug: welcome check-if-docker-image-exists ## Start project for development purporses
 	@echo 'Running on http://localhost:$(PORT)'
-	@docker run -t${INTERACTIVE} --rm -v ${PWD}:${APPDIR}:delegated --env-file=.env -p $(PORT):8088 -p $(PORT_DEBUG):8089 -e USER_PERM=$(shell id -u):$(shell id -g) --name ${CONTAINER_NAME} nav-challenge/${CONTAINER_NAME}:latest
+	@docker run -t${INTERACTIVE} --rm -v ${PWD}:${APPDIR}:delegated --env-file=.env -p $(PORT):8088 -p $(PORT_DEBUG):$(PORT_DEBUG) -e USER_PERM=$(shell id -u):$(shell id -g) --name ${CONTAINER_NAME} nav-challenge/${CONTAINER_NAME}:latest
 
 help: welcome
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep ^help -v | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
