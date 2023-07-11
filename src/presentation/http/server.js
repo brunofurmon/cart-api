@@ -5,8 +5,9 @@ const compress = require('compression')();
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const healtcheckRouterBuilder = require('./routes/healthcheck/routes');
+const cartRouterBuilder = require('./routes/carts/routes');
 
-const init = () => {
+const init = (container) => {
   const app = express();
 
   // Security enforcement
@@ -19,6 +20,7 @@ const init = () => {
 
   // Routing
   app.use('/api', healtcheckRouterBuilder.init());
+  app.use('/api', cartRouterBuilder.init(container));
   const httpServer = http.createServer(app);
   return httpServer;
 };

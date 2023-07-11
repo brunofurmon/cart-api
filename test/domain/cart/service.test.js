@@ -1,4 +1,9 @@
-const CartService = require('../../../src/domain/cart/service')();
+const cartRepository = {
+  getCart: jest.fn(),
+  updateCart: jest.fn(),
+};
+
+const CartService = require('../../../src/domain/cart/service')({ cartRepository });
 
 describe('CartService', () => {
   describe('AddProduct', () => {

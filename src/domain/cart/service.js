@@ -1,4 +1,10 @@
-const init = () => ({
+const init = ({ cartRepository }) => ({
+  // Gets the cart.
+  getCart: async () => {
+    const cart = await cartRepository.getCart();
+    return cart;
+  },
+
   // Adds products to a cart. If the product already exists in the cart, the quantity is updated.
   addProduct: (cart, product, quantity) => {
     const cartItem = cart.items.find((item) => item.productId === product.id);
