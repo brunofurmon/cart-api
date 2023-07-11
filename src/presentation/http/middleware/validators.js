@@ -43,4 +43,24 @@ const validateAddProduct = checkSchema(
   },
 );
 
-module.exports = { validateAddProduct, validate, validationResult };
+const validateRemoveProduct = checkSchema(
+  {
+    productId: {
+      in: ['params'],
+      isInt: {
+        errorMessage: 'The "productId" property must be present and be a positive integer.',
+        options: { min: 1 },
+
+      },
+    },
+    quantity: {
+      in: ['body'],
+      isInt: {
+        errorMessage: 'The "quantity" property must be present and be a positive non-zero integer.',
+        options: { min: 1 },
+      },
+    },
+  },
+);
+
+module.exports = { validateAddProduct, validateRemoveProduct, validate };

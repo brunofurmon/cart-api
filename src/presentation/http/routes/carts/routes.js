@@ -1,6 +1,10 @@
 const express = require('express');
 
-const { validateAddProduct, validate } = require('../../middleware/validators');
+const {
+  validateAddProduct,
+  validateRemoveProduct,
+  validate,
+} = require('../../middleware/validators');
 
 const router = express.Router({ mergeParams: true });
 
@@ -19,6 +23,19 @@ function init({ cartService }) {
         req.body.productId,
         req.body.quantity,
         req.body.price,
+      );
+      res.json(cart);
+    },
+  );
+
+  router.delete(
+    '/cart/product/:productId',
+    validateRemoveProduct,
+    validate,
+    async (req, res) => {
+      const cart = await cartService.removeProduct(
+        parseInt(req.params.productId, 10),
+        req.body.quantity,
       );
       res.json(cart);
     },
