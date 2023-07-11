@@ -47,30 +47,35 @@ const init = ({ cartRepository }) => {
     }
 
     cart.totalPrice = getTotalPrice(cart);
-
     await cartRepository.updateCart(cart);
 
     return cart;
   };
 
   // Removes products from a cart. Removes the product item if the quantity is 0 or less.
-  const removeProduct = (cart, product, quantity) => {
-    const cartProduct = cart.items.filter((item) => item.productId === product.id);
+  const removeProduct = async (productId, quantity) => {
+    const cart = await cartRepository.getCart();
+    const cartProduct = cart.items.filter((item) => item.productId === productId);
 
+    // Product not found
     if (cartProduct.length === 0) {
       return cart;
     }
+
     const item = cartProduct[0];
     item.quantity -= quantity;
-    if (item.quantity <= 0) {
-      const updatedCart = { ...cart };
 
-      updatedCart.items = cart.items.filter((cartItem) => cartItem.productId !== product.id);
+    const updatedCart = { ...cart };
 
-      return updatedCart;
+    updatedCart.items = updatedCart.items.filter((cartItem) => cartItem.productId !== productId);
+    if (item.quantity > 0) {
+      updatedCart.items.push(item);
     }
 
-    return cart;
+    updatedCart.totalPrice = getTotalPrice(updatedCart);
+    await cartRepository.updateCart(updatedCart);
+
+    return updatedCart;
   };
 
   return {

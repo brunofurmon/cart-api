@@ -60,47 +60,81 @@ describe('CartService', () => {
 
   describe('RemoveProduct', () => {
     it('Should return a cart with one product when subtracting', () => {
-      const cart = { items: [{ productId: 1, quantity: 2, price: 1 }] };
-      const product = { id: 1 };
+      cartRepository.getCart.mockResolvedValueOnce({
+        items: [{ productId: 1, quantity: 2, price: 1 }],
+        totalPrice: 2,
+      });
+      const productId = 1;
       const quantity = 1;
-      const expected = { items: [{ productId: 1, quantity: 1, price: 1 }] };
+      const expected = {
+        items: [{ productId: 1, quantity: 1, price: 1 }],
+        totalPrice: 1,
+      };
 
-      const actual = CartService.removeProduct(cart, product, quantity);
+      const actual = CartService.removeProduct(productId, quantity);
 
-      expect(actual).toStrictEqual(expected);
+      expect(actual).resolves.toEqual(expected);
     });
 
     it('Should return an empty cart when a quantity is exactly removed', () => {
-      const cart = { items: [{ productId: 1, quantity: 1, price: 1 }] };
-      const product = { id: 1 };
+      cartRepository.getCart.mockResolvedValueOnce({
+        items: [{ productId: 1, quantity: 1, price: 1 }],
+        totalPrice: 2,
+      });
+      const productId = 1;
       const quantity = 1;
-      const expected = { items: [] };
+      const expected = { items: [], totalPrice: 0 };
 
-      const actual = CartService.removeProduct(cart, product, quantity);
+      const actual = CartService.removeProduct(productId, quantity);
 
-      expect(actual).toStrictEqual(expected);
+      expect(actual).resolves.toEqual(expected);
     });
 
     it('Should return a cart with no items even if the value to be removed exceeds the quantity', () => {
-      const cart = { items: [{ productId: 1, quantity: 1, price: 1 }] };
-      const product = { id: 1 };
-      const quantity = 2;
-      const expected = { items: [] };
+      cartRepository.getCart.mockResolvedValueOnce({
+        items: [{ productId: 1, quantity: 1, price: 1 }],
+        totalPrice: 2,
+      });
+      const productId = 1;
+      const quantity = 100;
+      const expected = { items: [], totalPrice: 0 };
 
-      const actual = CartService.removeProduct(cart, product, quantity);
+      const actual = CartService.removeProduct(productId, quantity);
 
-      expect(actual).toStrictEqual(expected);
+      expect(actual).resolves.toEqual(expected);
     });
 
-    it('Should remove an empty cart when the product being removed is not present', () => {
-      const cart = { items: [] };
-      const product = { id: 1 };
-      const quantity = 1;
-      const expected = { items: [] };
+    it('Should return the same cart when the product being removed is not present', () => {
+      const expectedCart = {
+        items: [{ productId: 1, quantity: 1, price: 1 }],
+        totalPrice: 2,
+      };
+      cartRepository.getCart.mockResolvedValueOnce(expectedCart);
+      const productId = 2;
+      const quantity = 50;
 
-      const actual = CartService.removeProduct(cart, product, quantity);
+      const actual = CartService.removeProduct(productId, quantity);
 
-      expect(actual).toStrictEqual(expected);
+      expect(actual).resolves.toEqual(expectedCart);
+    });
+
+    it('Should persist the cart after removing a product', async () => {
+      cartRepository.getCart.mockResolvedValueOnce({
+        items: [
+          { productId: 1, quantity: 2, price: 3 },
+          { productId: 2, quantity: 2, price: 1 }],
+        totalPrice: 7,
+      });
+      const productId = 1;
+      const quantity = 2;
+      const expected = {
+        items: [{ productId: 2, quantity: 2, price: 1 }],
+        totalPrice: 2,
+      };
+
+      await CartService.removeProduct(productId, quantity);
+
+      expect(cartRepository.updateCart).toHaveBeenCalledWith(expected);
     });
   });
 
