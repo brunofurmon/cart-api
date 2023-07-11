@@ -15,7 +15,7 @@ describe('CartService', () => {
 
       const actual = CartService.addProduct(cart, product, quantity);
 
-      expect(actual).toStrictEqual(expected);
+      expect(actual).resolves.toStrictEqual(expected);
     });
 
     it('Should return 2 items of the same product when adding 1 to the existing cart', () => {
@@ -26,7 +26,18 @@ describe('CartService', () => {
 
       const actual = CartService.addProduct(cart, product, quantity);
 
-      expect(actual).toStrictEqual(expected);
+      expect(actual).resolves.toStrictEqual(expected);
+    });
+
+    it('Should persist the cart after adding a product', () => {
+      const cart = { items: [] };
+      const product = { id: 1, price: 1 };
+      const quantity = 1;
+      const expected = { items: [{ productId: 1, quantity: 1, price: 1 }] };
+
+      CartService.addProduct(cart, product, quantity);
+
+      expect(cartRepository.updateCart).toHaveBeenCalledWith(expected);
     });
   });
 

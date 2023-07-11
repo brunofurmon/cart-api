@@ -6,13 +6,16 @@ const init = ({ cartRepository }) => ({
   },
 
   // Adds products to a cart. If the product already exists in the cart, the quantity is updated.
-  addProduct: (cart, product, quantity) => {
+  addProduct: async (cart, product, quantity) => {
     const cartItem = cart.items.find((item) => item.productId === product.id);
     if (cartItem) {
       cartItem.quantity += quantity;
     } else {
       cart.items.push({ productId: product.id, price: product.price, quantity });
     }
+
+    await cartRepository.updateCart(cart);
+
     return cart;
   },
 
