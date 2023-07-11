@@ -1,3 +1,5 @@
+const Cart = require('../../../src/domain/cart/model');
+
 const cartRepository = {
   getCart: jest.fn(),
   updateCart: jest.fn(),
@@ -8,34 +10,49 @@ const CartService = require('../../../src/domain/cart/service')({ cartRepository
 describe('CartService', () => {
   describe('AddProduct', () => {
     it('Should return a cart with one product', () => {
-      const cart = { items: [] };
-      const product = { id: 1, price: 1 };
+      cartRepository.getCart.mockResolvedValueOnce({ items: [] });
+      const productId = 1;
+      const price = 1;
       const quantity = 1;
-      const expected = { items: [{ productId: 1, quantity: 1, price: 1 }] };
+      const expected = new Cart({
+        items: [{ productId: 1, price: 1, quantity: 1 }],
+        totalPrice: 1,
+      });
 
-      const actual = CartService.addProduct(cart, product, quantity);
+      const actual = CartService.addProduct(productId, quantity, price);
 
-      expect(actual).resolves.toStrictEqual(expected);
+      expect(actual).resolves.toEqual(expected);
     });
 
     it('Should return 2 items of the same product when adding 1 to the existing cart', () => {
-      const cart = { items: [{ productId: 1, quantity: 1, price: 1 }] };
-      const product = { id: 1, price: 1 };
+      cartRepository.getCart.mockResolvedValueOnce({
+        items: [{ productId: 1, quantity: 1, price: 1 }],
+        totalPrice: 1,
+      });
+      const productId = 1;
+      const price = 1;
       const quantity = 1;
-      const expected = { items: [{ productId: 1, quantity: 2, price: 1 }] };
+      const expected = new Cart({
+        items: [{ productId: 1, quantity: 2, price: 1 }],
+        totalPrice: 2,
+      });
 
-      const actual = CartService.addProduct(cart, product, quantity);
+      const actual = CartService.addProduct(productId, quantity, price);
 
-      expect(actual).resolves.toStrictEqual(expected);
+      expect(actual).resolves.toEqual(expected);
     });
 
-    it('Should persist the cart after adding a product', () => {
-      const cart = { items: [] };
-      const product = { id: 1, price: 1 };
+    it('Should persist the cart after adding a product', async () => {
+      cartRepository.getCart.mockResolvedValueOnce({ items: [] });
+      const productId = 1;
+      const price = 1;
       const quantity = 1;
-      const expected = { items: [{ productId: 1, quantity: 1, price: 1 }] };
+      const expected = {
+        items: [{ productId: 1, quantity: 1, price: 1 }],
+        totalPrice: 1,
+      };
 
-      CartService.addProduct(cart, product, quantity);
+      await CartService.addProduct(productId, quantity, price);
 
       expect(cartRepository.updateCart).toHaveBeenCalledWith(expected);
     });
@@ -178,6 +195,19 @@ describe('CartService', () => {
         ],
       };
       const expected = '91.30';
+
+      const actual = CartService.getTotalPrice(cart);
+
+      expect(actual.toFixed(2)).toBe(expected);
+    });
+
+    it('Should subtract 2 of the same items from total', () => {
+      const cart = {
+        items: [
+          { productId: 1, quantity: 6, price: 12.99 },
+        ],
+      };
+      const expected = '51.96';
 
       const actual = CartService.getTotalPrice(cart);
 
