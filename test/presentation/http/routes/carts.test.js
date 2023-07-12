@@ -78,4 +78,32 @@ describe('Cart API', () => {
       expect(body).toEqual({ message: 'The "quantity" property must be present and be a positive non-zero integer.' });
     });
   });
+
+  describe('Scenario testing', () => {
+    afterEach(async () => {
+      await request(server).delete('/api/cart/product/1').send({ quantity: 3 }).expect(200);
+      await request(server).delete('/api/cart/product/2').send({ quantity: 3 }).expect(200);
+      await request(server).delete('/api/cart/product/3').send({ quantity: 3 }).expect(200);
+    });
+
+    it('The customer bought 3 t-shirts - The total price on this case must be USD 25.98', async () => {
+      const { body } = await request(server).post('/api/cart/product').send({ productId: 1, quantity: 3, price: 12.99 }).expect(200);
+
+      expect(body.totalPrice).toBeCloseTo(25.98);
+    });
+
+    it('The customer bought 2 t-shirts and 2 jeans - The total price on this case must be USD 62.99', async () => {
+      await request(server).post('/api/cart/product').send({ productId: 1, quantity: 2, price: 12.99 }).expect(200);
+      const { body } = await request(server).post('/api/cart/product').send({ productId: 2, quantity: 2, price: 25.00 }).expect(200);
+
+      expect(body.totalPrice).toBeCloseTo(62.99);
+    });
+    it('The customer bought 1 T-shirt, 2 Jeans and 3 Dress - The total price on this case must be USD 91,30', async () => {
+      await request(server).post('/api/cart/product').send({ productId: 1, quantity: 1, price: 12.99 }).expect(200);
+      await request(server).post('/api/cart/product').send({ productId: 2, quantity: 2, price: 25.00 }).expect(200);
+      const { body } = await request(server).post('/api/cart/product').send({ productId: 3, quantity: 3, price: 20.65 }).expect(200);
+
+      expect(body.totalPrice).toBeCloseTo(91.30);
+    });
+  });
 });
