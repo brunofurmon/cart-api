@@ -13,6 +13,7 @@ const gracefulShutdown = async () => {
 
   server = httpServer.listen(process.env.SERVER_PORT, () => {
     logger.info(`Server is running on port ${process.env.SERVER_PORT}`);
+    logger.debug(`Documentation available on http://localhost:${process.env.SERVER_PORT}/api/doc`);
   });
 })();
 

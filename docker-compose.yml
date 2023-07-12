@@ -1,0 +1,12 @@
+version: '3'
+services:
+    cart-api:
+        image: nav-challenge/cart-api
+        restart: always
+        build:
+            context: .
+            target: production
+        env_file:
+            - .env
+        ports:
+            - "${SERVER_PORT}:${SERVER_PORT}"

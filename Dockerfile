@@ -14,8 +14,8 @@ FROM base as development
     ENTRYPOINT ["./development_entrypoint.sh"]
 
 FROM base as production
-    ENV SERVER_PORT=8088
-    EXPOSE 8088
+    ENV SERVER_PORT ${SERVER_PORT}
+    EXPOSE ${SERVER_PORT}
 
     ENV NODE_ENV production
 

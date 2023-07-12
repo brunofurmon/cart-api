@@ -1,14 +1,14 @@
 {
   "name": "cart-api",
   "version": "0.1.0",
-  "main": "src/index.js",
+  "main": "src/application/server.js",
   "repository": "https://github.com/brunofurmon/cart-api",
   "author": "Bruno Furtado <brunofurmon@gmail.com>",
   "license": "MIT",
   "scripts": {
     "lint": "eslint --fix ./**/*.js",
     "debug": "nodemon --inspect=0.0.0.0 src/application/server.js",
-    "test": "jest --detectOpenHandles --coverage --passWithNoTests",
+    "test": "jest --detectOpenHandles --coverage",
     "start": "node src/application/server.js"
   },
   "devDependencies": {
