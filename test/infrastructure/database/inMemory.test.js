@@ -8,6 +8,7 @@ describe('inMemory database', () => {
   beforeEach(() => {
     logger = {
       debug: jest.fn(),
+      info: jest.fn(),
     };
     database = dbBuilder({ logger });
   });
@@ -37,7 +38,7 @@ describe('inMemory database', () => {
           totalPrice: 12.99,
         },
       );
-      expect(logger.debug).toHaveBeenCalledWith('Updating carts with id: 1 with data: {"items":[{"productId":1,"price":12.99,"quantity":1}],"totalPrice":12.99}');
+      expect(logger.info).toHaveBeenCalledWith('Updating carts with id: 1 with data: {"items":[{"productId":1,"price":12.99,"quantity":1}],"totalPrice":12.99}');
     });
   });
 });

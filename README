@@ -1,3 +1,24 @@
 # Cart API
 
-## Under development
+# Table of Contents
+
+# Dependencies
+
+# Installation
+
+# Data Flow
+
+# API Documentation
+
+# Developing Further
+
+# Project Assumptions
+- In a real environment, carts are usually associated with users, but for simplicity, this API assumes a single cart.
+- There will be always an existing Cart, and its initial state is an empty list of products and total price of 0.
+- Although not persisted in a Database, a persistence layer is added to the project to simulate the ports and adapters
+- The buy 2 get 3 promotion is always applied to the cart. In a real environment, this would be a promotion configuration that would be applied to the cart based on a set of rules and conditions like period, item count and user profile.
+
+- (TODO!) Items in the cart could have same id (or SKU) but different prices. In this case, the promotion would be applied to the cheapest item.
+- (TODO!) Better adapter interfaces over the layers
+
+# Architectural Decisions
