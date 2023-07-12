@@ -10,10 +10,12 @@ const init = ({ logger }) => {
   };
 
   const update = async (collectionName, data) => {
-    logger.debug(`Updating ${collectionName} with id: 1 with data: ${JSON.stringify(data)}`);
+    logger.info(`Updating ${collectionName} with id: 1 with data: ${JSON.stringify(data)}`);
     db[collectionName][0] = data;
     return data;
   };
+
+  logger.info('In-memory database initialized');
 
   return {
     read,

@@ -14,6 +14,7 @@ const init = () => {
     transports: new winston.transports.Console(),
   });
 
+  logger.info('Logger initialized. Using Console transport only.');
   return logger;
 };
 
