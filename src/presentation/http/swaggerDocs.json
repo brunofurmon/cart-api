@@ -1,0 +1,192 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.1.0",
+    "title": "Cart API",
+    "description": "An API to add and remove products from a cart. The total price is calculated based on the quantity of each product, and based on a promotion \"Get 3 for the price of 2\""
+  },
+  "host": "localhost:8088",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/api/cart": {
+      "get": {
+        "description": "Fetches the cart",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Cart"
+            }
+          }
+        }
+      }
+    },
+    "/api/cart/product": {
+      "post": {
+        "description": "Adds a product to the cart",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AddProductRequestBody"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Cart"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/AddProductBadRequest"
+            }
+          }
+        }
+      }
+    },
+    "/api/cart/product/{productId}": {
+      "delete": {
+        "description": "Removes a product by the quantity parameter",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RemoveProductRequestBody"
+            }
+          }
+        ],
+        
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema":{
+              "$ref": "#/definitions/Cart"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema":{
+              "$ref": "#/definitions/RemoveProductBadRequest"
+            }
+          }
+        }
+      }
+    },
+    "/healthcheck": {
+      "get": {
+        "description": "Checks if the API is up and running",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "ok"
+                },
+                "serverDate": {
+                  "type": "string",
+                  "example": "2023-07-11T21:55:57.842Z"
+                }
+              }
+            }
+          }
+        },
+        "produces": [ "application/json" ]
+      }
+    }
+  },
+  "definitions": {
+    "Cart": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CartItem"
+          }
+        },
+        "totalPrice": {
+          "type": "number",
+          "example": 12.99
+        }
+      }
+    },
+    "CartItem": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "integer",
+          "example": 1
+        },
+        "quantity": {
+          "type": "integer",
+          "example": 1
+        },
+        "price": {
+          "type": "number",
+          "example": 12.99
+        }
+      }
+    },
+    "RemoveProductRequestBody": {
+      "type": "object",
+      "properties": {
+        "quantity": {
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
+    "RemoveProductBadRequest": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "The \"quantity\" property must be present and be a positive non-zero integer."
+        }
+      }
+    },
+    "AddProductRequestBody":{
+      "type":"object",
+      "$ref": "#/definitions/CartItem"
+    },
+    "AddProductBadRequest": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "The \"price\" decimal number must be present and >= 0.01 (use . for decimal separator)."
+        }
+      }
+    }
+  }
+}

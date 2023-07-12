@@ -4,8 +4,11 @@ const cors = require('cors');
 const compress = require('compression')();
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
+const swaggerUi = require('swagger-ui-express');
 const healtcheckRouterBuilder = require('./routes/healthcheck/routes');
 const cartRouterBuilder = require('./routes/carts/routes');
+
+const swaggerDocument = require('./swaggerDocs.json');
 
 const init = (container) => {
   const app = express();
@@ -19,8 +22,11 @@ const init = (container) => {
   app.use(cors());
 
   // Routing
-  app.use('/api', healtcheckRouterBuilder.init());
+  app.use('/', healtcheckRouterBuilder.init());
   app.use('/api', cartRouterBuilder.init(container));
+
+  // API Docs
+  app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   const httpServer = http.createServer(app);
   return httpServer;
 };
